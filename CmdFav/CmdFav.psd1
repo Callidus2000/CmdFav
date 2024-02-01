@@ -41,6 +41,7 @@
 	# Functions to export from this module
 	FunctionsToExport = @(
 		'Get-CmdFavCache'
+		'Get-CmdFav'
 		'Add-CmdFav'
 	)
 
