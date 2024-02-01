@@ -25,6 +25,8 @@
 
 CmdFav is a PowerShell module designed to help you manage and organize your favorite commands efficiently. It provides cmdlets for adding, editing, exporting, and importing favorite commands, allowing you to streamline your command-line experience. By this it provides kind of bookmarking system for everyday snippets in the commandline.
 
+![movingExample](media/cmdfav.gif)
+
 ## Features
 
 - **Add-CmdFav:** Add your frequently used commands to a cache with custom names, tags, and descriptions.
