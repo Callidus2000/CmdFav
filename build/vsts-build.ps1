@@ -6,17 +6,17 @@ Insert any build steps you may need to take before publishing it here.
 #>
 param (
 	$ApiKey,
-	
+
 	$WorkingDirectory,
-	
+
 	$Repository = 'PSGallery',
-	
+
 	[switch]
 	$LocalRepo,
-	
+
 	[switch]
 	$SkipPublish,
-	
+
 	[switch]
 	$AutoVersion
 )
@@ -46,7 +46,7 @@ $processed = @()
 foreach ($filePath in (& "$($PSScriptRoot)\..\CmdFav\internal\scripts\preimport.ps1"))
 {
 	if ([string]::IsNullOrWhiteSpace($filePath)) { continue }
-	
+
 	$item = Get-Item $filePath
 	if ($item.PSIsContainer) { continue }
 	if ($item.FullName -in $processed) { continue }
@@ -66,7 +66,7 @@ Get-ChildItem -Path "$($publishDir.FullName)\CmdFav\functions\" -Recurse -File -
 foreach ($filePath in (& "$($PSScriptRoot)\..\CmdFav\internal\scripts\postimport.ps1"))
 {
 	if ([string]::IsNullOrWhiteSpace($filePath)) { continue }
-	
+
 	$item = Get-Item $filePath
 	if ($item.PSIsContainer) { continue }
 	if ($item.FullName -in $processed) { continue }
@@ -115,6 +115,7 @@ else
 {
 	# Publish to Gallery
 	Write-PSFMessage -Level Important -Message "Publishing the CmdFav module to $($Repository)"
-	Publish-Module -Path "$($publishDir.FullName)\CmdFav" -NuGetApiKey $ApiKey -Force -Repository $Repository
+	# Publish-Module -Path "$($publishDir.FullName)\CmdFav" -NuGetApiKey $ApiKey -Force -Repository $Repository
+	Publish-PSResource -Path "$($publishDir.FullName)\CmdFav" -ApiKey $ApiKey -Repository $Repository
 }
 #endregion Publish

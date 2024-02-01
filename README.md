@@ -43,23 +43,41 @@ Install-Module -Name CmdFav -Scope CurrentUser
 ```
 
 ## Usage
-Add a Favorite Command
-
+### Add a Favorite Command to the favorite System:
 ```PowerShell
+# Directly add the command
 Add-CmdFav -Name "MyFavorite" -CommandLine "Get-Process" -Tag "Monitoring"
+
+# Take the last used command from the history
+(Get-ADForest).domains|% {Get-ADUser -server $_ -filter {mail -like '*company.com'} -Properties mail}|select UserPrincipalName,name,mail
+Add-CmdFav -Name Example.AllADMailAddresses -LastCommand -Description "Get all users with their mail addresses from all forest domains"
+
+# Build a multiline command from the last 4 commands in the history
+Get-History -Count 4|Add-CmdFav -Name Example.MultiLine
 ```
 
-Edit an Existing Favorite Command
+### Recall stored commands
+```PowerShell
+Get-CmdFav -Name Example.AllADMailAddresses
+
+#Shorter
+gcf Example.AllADMailAddresses
+
+#Opens a GridView for selecting the command
+Get-CmdFav
+```
+
+### Edit an Existing Favorite Command
 ```PowerShell
 Edit-CmdFav -Name "MyFavorite" -CommandLine "Get-Service -Status Running" -Tag "Service" -Description "List running services"
 ```
 
-Export Favorite Commands
+### Export Favorite Commands
 ```PowerShell
 Export-CmdFav -Path "C:\Path\To\Favorites.json"
 ```
 
-Import Favorite Commands
+### Import Favorite Commands
 ```PowerShell
 Import-CmdFav -Path "C:\Path\To\Favorites.json"
 ```
