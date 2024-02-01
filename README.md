@@ -1,31 +1,132 @@
-﻿# Description
+﻿<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Thanks again! Now go create something AMAZING! :D
+***
+-->
 
-Insert a useful description for the CmdFav project here.
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![GPLv3 License][license-shield]][license-url]
 
-Remember, it's the first thing a visitor will see.
 
-# Project Setup Instructions
-## Working with the layout
+# CmdFav PowerShell Module
 
-- Don't touch the psm1 file
-- Place functions you export in `functions/` (can have subfolders)
-- Place private/internal functions invisible to the user in `internal/functions` (can have subfolders)
-- Don't add code directly to the `postimport.ps1` or `preimport.ps1`.
-  Those files are designed to import other files only.
-- When adding files & folders, make sure they are covered by either `postimport.ps1` or `preimport.ps1`.
-  This adds them to both the import and the build sequence.
+CmdFav is a PowerShell module designed to help you manage and organize your favorite commands efficiently. It provides cmdlets for adding, editing, exporting, and importing favorite commands, allowing you to streamline your command-line experience. By this it provides kind of bookmarking system for everyday snippets in the commandline.
 
-## Setting up CI/CD
+## Features
 
-> To create a PR validation pipeline, set up tasks like this:
+- **Add-CmdFav:** Add your frequently used commands to a cache with custom names, tags, and descriptions.
+  
+- **Edit-CmdFav:** Modify properties of existing favorite commands, such as command line, tags, descriptions, and even rename them.
 
-- Install Prerequisites (PowerShell Task; VSTS-Prerequisites.ps1)
-- Validate (PowerShell Task; VSTS-Validate.ps1)
-- Publish Test Results (Publish Test Results; NUnit format; Run no matter what)
+- **Export-CmdFav:** Export your favorite commands to a JSON file for backup or sharing.
 
-> To create a build/publish pipeline, set up tasks like this:
+- **Import-CmdFav:** Import favorite commands from a JSON file and integrate them into your cache.
 
-- Install Prerequisites (PowerShell Task; VSTS-Prerequisites.ps1)
-- Validate (PowerShell Task; VSTS-Validate.ps1)
-- Build (PowerShell Task; VSTS-Build.ps1)
-- Publish Test Results (Publish Test Results; NUnit format; Run no matter what)
+## Installation from the PowerShell Gallery
+
+```powershell
+# Install the CmdFav module from the PowerShell Gallery
+Install-Module -Name CmdFav -Scope CurrentUser
+```
+
+## Usage
+Add a Favorite Command
+
+```PowerShell
+Add-CmdFav -Name "MyFavorite" -CommandLine "Get-Process" -Tag "Monitoring"
+```
+
+Edit an Existing Favorite Command
+```PowerShell
+Edit-CmdFav -Name "MyFavorite" -CommandLine "Get-Service -Status Running" -Tag "Service" -Description "List running services"
+```
+
+Export Favorite Commands
+```PowerShell
+Export-CmdFav -Path "C:\Path\To\Favorites.json"
+```
+
+Import Favorite Commands
+```PowerShell
+Import-CmdFav -Path "C:\Path\To\Favorites.json"
+```
+
+<!-- ROADMAP -->
+## Roadmap
+New features will be added if any of my scripts need it ;-)
+
+I cannot guarantee that no breaking change will occur as the development follows my internal DevOps need completely. Likewise I will not insert full documentation of all parameters as I don't have time for this copy&paste. Sorry. But major changes which classify as breaking changes will result in an increment of the major version. See [Changelog](FortigateManager\changelog.md) for information regarding breaking changes.
+
+See the [open issues](https://github.com/Callidus2000/CmdFav/issues) for a list of proposed features (and known issues).
+
+If you need a special function feel free to contribute to the project.
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**. For more details please take a look at the [CONTRIBUTE](docs/CONTRIBUTING.md#Contributing-to-this-repository) document
+
+Short stop:
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+
+## Limitations
+* The module works on the ADOM level as this is the only permission set I've been granted
+* Maybe there are some inconsistencies in the docs, which may result in a mere copy/paste marathon from my other projects
+
+<!-- LICENSE -->
+## License
+
+Distributed under the GNU GENERAL PUBLIC LICENSE version 3. See `LICENSE.md` for more information.
+
+
+
+<!-- CONTACT -->
+## Contact
+
+
+Project Link: [https://github.com/Callidus2000/CmdFav](https://github.com/Callidus2000/CmdFav)
+
+
+
+<!-- ACKNOWLEDGEMENTS -->
+## Acknowledgements
+
+* [Friedrich Weinmann](https://github.com/FriedrichWeinmann) for his marvelous [PSModuleDevelopment](https://github.com/PowershellFrameworkCollective/PSModuleDevelopment) and [psframework](https://github.com/PowershellFrameworkCollective/psframework)
+* [Joel Bennett](https://github.com/jaykul) for his quick help regarding [How to inject text into the NEXT command prompt](https://gist.github.com/Jaykul/7dee4f47a61616fde6858ca960743fd5)
+
+
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/Callidus2000/CmdFav.svg?style=for-the-badge
+[contributors-url]: https://github.com/Callidus2000/CmdFav/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Callidus2000/CmdFav.svg?style=for-the-badge
+[forks-url]: https://github.com/Callidus2000/CmdFav/network/members
+[stars-shield]: https://img.shields.io/github/stars/Callidus2000/CmdFav.svg?style=for-the-badge
+[stars-url]: https://github.com/Callidus2000/CmdFav/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Callidus2000/CmdFav.svg?style=for-the-badge
+[issues-url]: https://github.com/Callidus2000/CmdFav/issues
+[license-shield]: https://img.shields.io/github/license/Callidus2000/CmdFav.svg?style=for-the-badge
+[license-url]: https://github.com/Callidus2000/CmdFav/blob/master/LICENSE
+

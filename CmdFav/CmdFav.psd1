@@ -42,8 +42,10 @@
 	FunctionsToExport = @(
 		'Add-CmdFav'
 		'Edit-CmdFav'
+		'Export-CmdFav'
 		'Get-CmdFav'
 		'Get-CmdFavCache'
+		'Import-CmdFav'
 		'Remove-CmdFav'
 	)
 
