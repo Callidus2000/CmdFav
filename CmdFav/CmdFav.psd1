@@ -40,9 +40,11 @@
 
 	# Functions to export from this module
 	FunctionsToExport = @(
-		'Get-CmdFavCache'
-		'Get-CmdFav'
 		'Add-CmdFav'
+		'Edit-CmdFav'
+		'Get-CmdFav'
+		'Get-CmdFavCache'
+		'Remove-CmdFav'
 	)
 
 	# Cmdlets to export from this module
@@ -52,7 +54,10 @@
 	VariablesToExport = ''
 
 	# Aliases to export from this module
-	AliasesToExport = ''
+	AliasesToExport = @(
+		'acf'
+		'gcf'
+	)
 
 	# List of all modules packaged with this module
 	ModuleList = @()

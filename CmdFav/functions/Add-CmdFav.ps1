@@ -13,6 +13,9 @@
     .PARAMETER CommandLine
         Specifies the command line to be associated with the favorite. This parameter is mandatory unless -LastCommand is used.
 
+    .PARAMETER Description
+        The description of the command
+
     .PARAMETER LastCommand
         Indicates that the last executed command should be used as the favorite command line. If this switch is used, the CommandLine parameter is ignored.
 
@@ -32,25 +35,26 @@
 
         Adds a favorite command named "LastCommandFavorite" with the last executed command line and a tag "Recent" to the cache.
 
-    .NOTES
-        File: CmdFav.psm1
-        Author: Your Name
-        Prerequisite: Import-Module CmdFav
-        License: MIT License
+    .EXAMPLE
+        Get-History -Id 22 -Count 2|Add-CmdFav -Name "ScriptblockFromHistory"
 
-    .LINK
-        https://github.com/YourRepo/CmdFav
+        Adds a favorite command named "ScriptblockFromHistory" with the executed command lines 21-22 from the command history
+
+    .NOTES
+
 
     #>
     [CmdletBinding()]
     param (
         [parameter(mandatory = $true, Position = 1)]
         [string]$Name,
-        [parameter(mandatory = $true,ParameterSetName='Direct',ValueFromPipelineByPropertyName=$true)]
+        [parameter(mandatory = $true, ParameterSetName = 'Direct', ValueFromPipelineByPropertyName = $true)]
         $CommandLine,
-        [parameter(mandatory = $true,ParameterSetName='LastCommand')]
+        [parameter(mandatory = $true, ParameterSetName = 'LastCommand')]
         [switch]$LastCommand,
+        [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Tags")]
         [string[]]$Tag,
+        [string]$Description,
         [switch]$Force
     )
 
@@ -67,13 +71,13 @@
                 Stop-PSFFunction  -Level Warning -Message "Favorite Name '$Name' already exists, -Force not used, does not overwrite"
             }
         }
-        $newEntry = $PSBoundParameters | ConvertTo-PSFHashtable -IncludeEmpty -Include Name, CommandLine, Tag
+        $newEntry = $PSBoundParameters | ConvertTo-PSFHashtable -IncludeEmpty -Include Name, CommandLine, Tag, Description
         $scriptBlockBuilder = [System.Text.StringBuilder]::new()
     }
 
     process {
-        if (Test-PSFFunctionInterrupt){return}
-        If ($PsCmdlet.ParameterSetName -eq 'LastCommand'){
+        if (Test-PSFFunctionInterrupt) { return }
+        If ($PsCmdlet.ParameterSetName -eq 'LastCommand') {
             $CommandLine = Get-History -Count 1 | select-object -ExpandProperty CommandLine
             # $newEntry.CommandLine = Get-History -Count 1 | select-object -ExpandProperty CommandLine
         }
@@ -88,6 +92,7 @@
         ([array]$cmdCache) += [PSCustomObject]$newEntry
         $cmdCache = [array]$cmdCache
         Write-PSFMessage "Saving cache to configuration framework"
-        Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete
+        Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete -PassThru | Register-PSFConfig -Scope FileUserShared
     }
 }
+Set-Alias -Name "acf" -Value "Add-CmdFav"
