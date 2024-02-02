@@ -59,30 +59,23 @@
     # Retrieving the command line for the specified favorite name.
     $command = $cmdCache | Where-Object name -eq $Name | Select-Object -ExpandProperty commandline
 
-    # Displaying the found command line.
+    # Logging the found command line.
     Write-PSFMessage "Found Command for name '$Name': $command"
 
-    # Setting global variables for suggestion and command injection.
-    $global:Suggestion = $command
+    # Swap carriage return against NewLines
+    $command = $command -replace "`r`n", "`n"
+
+    # Split (multiline) Command into single command array, Setting global variables for suggestion and command injection.
+    $global:commandArray=$command -split "`n"
+    # $global:Suggestion = $command
     $global:InjectCommand = Register-EngineEvent -SourceIdentifier PowerShell.OnIdle {
-        $global:Suggestion = $global:Suggestion.Replace("`r`n","`n")
-        # $commandArray = [array]($global:Suggestion.Split([Environment]::NewLine) | Where-Object { $_ })
-        $commandArray = [array](($global:Suggestion.Split("`n")).Split('') | Where-Object { $_ })
-        # for ($index = 0; $index -lt $commandArray.count;$index++) {
-        for ($index = ($commandArray.count-1); $index -ge 0; $index--) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($commandArray[$index])
+        # Insert last item first, newLine above the inserted command
+        for ($index = ($global:commandArray.count - 1); $index -ge 0; $index--) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($global:commandArray[$index])
             if ($index -gt 0) {
                 [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineAbove()
             }
         }
-        # # $global:Suggestion = $global:Suggestion -replace '`r`n','`n'
-        # $global:Suggestion.Split([Environment]::NewLine) | Where-Object { $_ } | ForEach-Object {
-        #     # [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$_`n")
-        #     # [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$_;")
-        #     [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$_")
-        #     [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineAbove()
-        # }
-        # [Microsoft.PowerShell.PSConsoleReadLine]::Insert($global:Suggestion)
         Stop-Job $global:InjectCommand
     }
 }

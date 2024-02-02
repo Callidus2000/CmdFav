@@ -79,10 +79,8 @@
         if (Test-PSFFunctionInterrupt) { return }
         If ($PsCmdlet.ParameterSetName -eq 'LastCommand') {
             $CommandLine = Get-History -Count 1 | select-object -ExpandProperty CommandLine
-            # $newEntry.CommandLine = Get-History -Count 1 | select-object -ExpandProperty CommandLine
         }
-        if ($scriptBlockBuilder.Length -gt 0) { [void]$scriptBlockBuilder.Append("`n") }
-        # if ($scriptBlockBuilder.Length -gt 0) { [void]$scriptBlockBuilder.AppendLine() }
+        if ($scriptBlockBuilder.Length -gt 0) { [void]$scriptBlockBuilder.AppendLine() }
         [void]$scriptBlockBuilder.Append($CommandLine)
     }
 
