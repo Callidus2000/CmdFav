@@ -22,7 +22,7 @@
     #>
     [CmdletBinding()]
     param (
-        [parameter(mandatory = $true, Position = 1,ParameterSetName='targeted')]
+        [parameter(mandatory = $true, Position = 1, ParameterSetName = 'targeted')]
         # [parameter(mandatory = $false, Position = 1,ParameterSetName='chooser')]
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Names")]
         [string]$Name,
@@ -40,20 +40,21 @@
         return
     }
     If ([string]::IsNullOrWhiteSpace($Name)) {
-        if(-not [string]::IsNullOrEmpty($Tag)){
+        if (-not [string]::IsNullOrEmpty($Tag)) {
             Write-PSFMessage "Filtering existing commands by Tag $Tag"
             $cmdCache = $cmdCache | Where-Object { $_.Tag -contains $Tag }
         }
-        if (Get-PSFConfigValue -FullName 'CmdFav.Selector.ConsoleGridView' -Fallback $true){
-            $chosenCommand=$cmdCache|Select-Object -Property Name,Tag,CommandLine|Out-ConsoleGridView -OutputMode Single -Title "Choose a favorite command"
-        }else{
-            $chosenCommand=$cmdCache|Select-Object -Property Name,Tag,CommandLine|Out-GridView -OutputMode Single -Title "Choose a favorite command"
+        if (Get-PSFConfigValue -FullName 'CmdFav.Selector.ConsoleGridView' -Fallback $true) {
+            $chosenCommand = $cmdCache | Select-Object -Property Name, Tag, CommandLine | Out-ConsoleGridView -OutputMode Single -Title "Choose a favorite command"
         }
-        if (-not $chosenCommand){
+        else {
+            $chosenCommand = $cmdCache | Select-Object -Property Name, Tag, CommandLine | Out-GridView -OutputMode Single -Title "Choose a favorite command"
+        }
+        if (-not $chosenCommand) {
             Write-PSFMessage "Nothing chosen"
             return
         }
-        $Name=$chosenCommand.name
+        $Name = $chosenCommand.name
     }
     # Retrieving the command line for the specified favorite name.
     $command = $cmdCache | Where-Object name -eq $Name | Select-Object -ExpandProperty commandline
@@ -64,7 +65,24 @@
     # Setting global variables for suggestion and command injection.
     $global:Suggestion = $command
     $global:InjectCommand = Register-EngineEvent -SourceIdentifier PowerShell.OnIdle {
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($global:Suggestion)
+        $global:Suggestion = $global:Suggestion.Replace("`r`n","`n")
+        # $commandArray = [array]($global:Suggestion.Split([Environment]::NewLine) | Where-Object { $_ })
+        $commandArray = [array](($global:Suggestion.Split("`n")).Split('') | Where-Object { $_ })
+        # for ($index = 0; $index -lt $commandArray.count;$index++) {
+        for ($index = ($commandArray.count-1); $index -ge 0; $index--) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($commandArray[$index])
+            if ($index -gt 0) {
+                [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineAbove()
+            }
+        }
+        # # $global:Suggestion = $global:Suggestion -replace '`r`n','`n'
+        # $global:Suggestion.Split([Environment]::NewLine) | Where-Object { $_ } | ForEach-Object {
+        #     # [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$_`n")
+        #     # [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$_;")
+        #     [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$_")
+        #     [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineAbove()
+        # }
+        # [Microsoft.PowerShell.PSConsoleReadLine]::Insert($global:Suggestion)
         Stop-Job $global:InjectCommand
     }
 }
