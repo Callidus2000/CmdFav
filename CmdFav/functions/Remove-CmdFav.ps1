@@ -27,6 +27,7 @@
     )
 
     # Retrieving the favorite commands cache.
+    Restore-CmdFav
     $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
 
     # Handling the case where no favorite commands are stored.
@@ -37,5 +38,6 @@
 
     # Removes the command line for the specified favorite name.
     $cmdCache = $cmdCache | Where-Object name -ne $Name
-    Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete -PassThru | Register-PSFConfig -Scope FileUserShared
+    Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete # -PassThru | Register-PSFConfig -Scope FileUserShared
+    Save-CmdFav
 }
