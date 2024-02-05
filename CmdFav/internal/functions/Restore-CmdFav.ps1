@@ -16,8 +16,11 @@ function Restore-CmdFav {
 
     )
     $configfile = Join-Path (Get-PSFConfigValue -FullName 'CmdFav.HistorySave.Path') (Get-PSFConfigValue -FullName 'CmdFav.HistorySave.File')
-    Write-PSFMessage "Loading CmdFav History Cache from $configfile"
-    Invoke-PSFProtectedCommand -Action "Importing pre-existing configuration from $configfile" -ScriptBlock {
-        Import-PSFConfig -Path $configfile
+    if (Test-Path $configfile){
+        Invoke-PSFProtectedCommand -Action "Importing pre-existing configuration from $configfile" -ScriptBlock {
+            Import-PSFConfig -Path $configfile
+        }
+    }else{
+        Write-PSFMessage "Not Loading CmdFav History Cache from $configfile as the file does not exist"
     }
 }
