@@ -24,3 +24,6 @@ $moduleRoot = Split-Path (Split-Path $PSScriptRoot)
 
 # Load License
 "$moduleRoot\internal\scripts\license.ps1"
+
+# ensure that the history file can be saved
+"$moduleRoot\internal\scripts\prepare-savefile.ps1"

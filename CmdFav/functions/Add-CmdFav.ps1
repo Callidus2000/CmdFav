@@ -70,6 +70,8 @@
     )
 
     begin {
+        # $($env:LocalAppData)\WindowsPowerShell\PSFramework\Config
+        Restore-CmdFav
         $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
         if (-not $cmdCache) { $cmdCache = @() }
         $prevFav = ($cmdCache | Where-Object name -eq $Name)
@@ -111,7 +113,8 @@
         ([array]$cmdCache) += [PSCustomObject]$newEntry
         $cmdCache = [array]$cmdCache
         Write-PSFMessage "Saving cache to configuration framework"
-        Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete -PassThru | Register-PSFConfig -Scope FileUserShared
+        Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete # -PassThru | Register-PSFConfig -Scope FileUserShared
+        Save-CmdFav
     }
 }
 Set-Alias -Name "acf" -Value "Add-CmdFav"
