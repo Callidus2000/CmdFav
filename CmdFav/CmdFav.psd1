@@ -3,7 +3,7 @@
 	RootModule = 'CmdFav.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '1.0.1'
+	ModuleVersion = '1.1.0'
 
 	# ID used to uniquely identify this module
 	GUID = '7608a40d-981d-440d-b140-1ce3c4033cf5'

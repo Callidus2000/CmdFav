@@ -22,6 +22,9 @@
     .PARAMETER Tag
         Specifies tags to help categorize and organize the favorite commands.
 
+    .PARAMETER Id
+        The Id from Get-History from the commands to be used
+
     .PARAMETER Force
         Forces overwriting an existing favorite with the same name.
 
@@ -40,11 +43,17 @@
 
         Adds a favorite command named "ScriptblockFromHistory" with the executed command lines 21-22 from the command history
 
+    .EXAMPLE
+        Get-History -Id 22,23,26 | Add-CmdFav -Name "MultiLineByPipe"
+        Add-CmdFav -Name "MultiLineById" -Id 22,23,26
+
+        Adds favorite commands with the command lines 22-23,26 from the command history
+
     .NOTES
 
 
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName='Direct')]
     param (
         [parameter(mandatory = $true, Position = 1)]
         [string]$Name,
@@ -52,6 +61,8 @@
         $CommandLine,
         [parameter(mandatory = $true, ParameterSetName = 'LastCommand')]
         [switch]$LastCommand,
+        [parameter(mandatory = $true, ParameterSetName = 'HistoryID')]
+        [int[]]$Id,
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Tags")]
         [string[]]$Tag,
         [string]$Description,
@@ -73,19 +84,28 @@
         }
         $newEntry = $PSBoundParameters | ConvertTo-PSFHashtable -IncludeEmpty -Include Name, CommandLine, Tag, Description
         $scriptBlockBuilder = [System.Text.StringBuilder]::new()
+        $commandArray=@()
+        If ($PsCmdlet.ParameterSetName -eq 'LastCommand') {
+            $commandArray += (Get-History -Count 1 | select-object -ExpandProperty CommandLine)
+        }
     }
 
     process {
         if (Test-PSFFunctionInterrupt) { return }
-        If ($PsCmdlet.ParameterSetName -eq 'LastCommand') {
-            $CommandLine = Get-History -Count 1 | select-object -ExpandProperty CommandLine
-        }
-        if ($scriptBlockBuilder.Length -gt 0) { [void]$scriptBlockBuilder.AppendLine() }
-        [void]$scriptBlockBuilder.Append($CommandLine)
+        $commandArray+=$CommandLine
     }
 
     end {
         if (Test-PSFFunctionInterrupt) { return }
+        if ($PsCmdlet.ParameterSetName -eq 'HistoryID') {
+            Write-PSFMessage "Searching History by Id"
+            $commandArray+=(Get-History -Id $Id).CommandLine
+        }
+        Write-PSFMessage "`$commandArray=$commandArray"
+        foreach($cmd in $commandArray){
+            if ($scriptBlockBuilder.Length -gt 0) { [void]$scriptBlockBuilder.AppendLine() }
+            [void]$scriptBlockBuilder.Append($cmd)
+        }
         $newEntry.CommandLine = $scriptBlockBuilder.ToString()
         Write-PSFMessage "Adding $($newEntry | ConvertTo-Json -Compress) to the cache"
         ([array]$cmdCache) += [PSCustomObject]$newEntry
