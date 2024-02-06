@@ -45,6 +45,9 @@ Install-Module -Name CmdFav -Scope CurrentUser
 ```
 
 ## Usage
+**Important first words!**
+Even this should be obvious: **NEVER** use the module to save something secret! Everyone who gets access to the cache file can read everything in it! So instead of saving an API access token or a password save a multiline command which retrieves the secret from something like a SecretManagement Vault.
+
 ### Add a Favorite Command to the favorite System:
 ```PowerShell
 # Directly add the command
@@ -83,6 +86,13 @@ Export-CmdFav -Path "C:\Path\To\Favorites.json"
 ```PowerShell
 Import-CmdFav -Path "C:\Path\To\Favorites.json"
 ```
+
+### Change the save location for the settings cache
+```PowerShell
+Set-PSFConfig -FullName CmdFav.HistorySave.Path -Value "C:\Users\MyUser\OneDrive\PowerShell" -PassThru|Register-PSFConfig -Scope UserDefault
+```
+
+**Attention!** If you have already got commands saved you have to modify something in the cache to get the existing data automatically transferred! Or copy the `cmdfav.json` file from `$($env:AppData)\PowerShell\PSFramework\Config` manually to the new location.
 
 <!-- ROADMAP -->
 ## Roadmap
