@@ -56,6 +56,7 @@
     [CmdletBinding(DefaultParameterSetName='Direct')]
     param (
         [parameter(mandatory = $true, Position = 1)]
+        [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Names")]
         [string]$Name,
         [parameter(mandatory = $true, ParameterSetName = 'Direct', ValueFromPipelineByPropertyName = $true)]
         $CommandLine,
