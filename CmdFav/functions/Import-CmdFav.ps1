@@ -37,5 +37,6 @@
     }
 
     # Saving the imported favorite commands to the cache.
-    Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value $importedCmds -AllowDelete -PassThru | Register-PSFConfig -Scope FileUserShared
+    Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value $importedCmds -AllowDelete #-PassThru | Register-PSFConfig -Scope FileUserShared
+    Save-CmdFav
 }
