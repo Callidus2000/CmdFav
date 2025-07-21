@@ -1,19 +1,29 @@
-﻿
-function Restore-CmdFav {
+﻿function Restore-CmdFav {
     <#
-    .SYNOPSIS
-        Restores the CmdFav history cache from a specified configuration file.
+        .SYNOPSIS
+        Restores the CmdFav history cache from registered repository configuration files.
 
-    .DESCRIPTION
-        The Restore-CmdFav function restores the CmdFav history cache from a configuration file.
-        The path and filename for the configuration file are determined by the CmdFav module settings.
+        .DESCRIPTION
+        The Restore-CmdFav function restores the CmdFav history cache from all configured
+        CmdFav repositories. The path and filename for each repository are determined by the
+        CmdFav module settings. You can choose to replace the current cache or append to it.
 
-    .EXAMPLE
+        .PARAMETER Mode
+        Determines whether to replace the current cache ('Replace') or append new entries
+        while keeping existing ones ('Append'). Default is 'Replace'.
+
+        .EXAMPLE
         Restore-CmdFav
+        Restores the CmdFav history cache from all registered repositories, replacing the current cache.
+
+        .EXAMPLE
+        Restore-CmdFav -Mode Append
+        Restores the CmdFav history cache and appends new entries, keeping existing commands.
     #>
     [CmdletBinding()]
     param (
-        [string[]]$RepositoryName
+        [ValidateSet('Replace','Append')]
+        [string]$Mode = 'Replace'
     )
     $repos = Get-CmdFavRepository
     if (-not $repos) {
@@ -21,6 +31,7 @@ function Restore-CmdFav {
         return
     }
     $cmdCache = @()
+    $oldCommandCache=Get-CmdFavCache
     foreach ($repository in $repos) {
         $filePath = $repository.Path
         if ($repository.Name -eq 'PERSONALDEFAULT') {
@@ -30,11 +41,6 @@ function Restore-CmdFav {
             $prefix = "$($repository.Prefix)."
         }
 
-        # $repoCommands = $cmdCache | Where-Object { $_.Repository -eq $repository.Name } | Select-PSFObject -Property @{N = 'Name'; E = {
-        #         $_.Name -replace "^$($repository.Prefix)\.", ""
-        #     }
-        # }, CommandLine, Tag
-        # write-PSFMessage -Level Verbose -Message "Saving $($repoCommands.count) favorites with prefix '$($repository.Prefix)' to CmdFav repository '$($repository.Name)' to file '$filePath'"
         if(-not (Test-Path -Path $filePath)) {
             Write-PSFMessage -Level Warning -Message "File '$filePath' does not exist, skipping repository '$($repository.Name)'"
             continue
@@ -43,5 +49,14 @@ function Restore-CmdFav {
             $cmdCache += [array] (import-PSFClixml -Path $filePath | select-PSFObject -Property @{Name = 'Name'; Expression = { "$Prefix$($_.Name)" } }, CommandLine, Tag, @{Name = 'Repository'; Expression = { $repository.Name } })
         }
     }
-    Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete # -PassThru | Register-PSFConfig -Scope FileUserShared
+
+    if($Mode -eq 'Append') {
+        $missingOldCommands = $oldCommandCache | Where-Object { $_.name -notin $cmdCache.Name }
+        if ($missingOldCommands) {
+            Write-PSFMessage -Level Verbose -Message "Keeping existing Commands '$($missingOldCommands.name -join ',')'"
+            $cmdCache += $oldCommandCache
+        }
+    }
+    Set-CmdFavCache -cmdCache $cmdCache
+    Update-CmdFavRepositoryMapping
 }

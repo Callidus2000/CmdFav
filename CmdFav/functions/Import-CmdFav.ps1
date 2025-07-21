@@ -20,7 +20,7 @@
         [parameter(mandatory = $true, Position = 1)]
         [String]$Path
     )
-
+    Write-PSFMessage -Level Verbose -Message "Importing CmdFav favorites from file: $Path"
     # Checking if the specified file exists.
     if (-not (Test-Path -Path $Path -PathType Leaf)) {
         Stop-PSFFunction -Level Error -Message "File not found: $Path"

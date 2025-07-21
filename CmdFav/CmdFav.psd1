@@ -50,9 +50,6 @@
 		'Register-CmdFavRepository'
 		'Remove-CmdFav'
 		'UnRegister-CmdFavRepository'
-		'Update-CmdFavRepositoryMapping'
-		'Save-CmdFav'
-		'Restore-CmdFav'
 	)
 
 	# Cmdlets to export from this module

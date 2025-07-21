@@ -30,12 +30,10 @@ CmdFav is a PowerShell module designed to help you manage and organize your favo
 ## Features
 
 - **Add-CmdFav:** Add your frequently used commands to a cache with custom names, tags, and descriptions.
-  
 - **Edit-CmdFav:** Modify properties of existing favorite commands, such as command line, tags, descriptions, and even rename them.
-
 - **Export-CmdFav:** Export your favorite commands to a JSON file for backup or sharing.
-
 - **Import-CmdFav:** Import favorite commands from a JSON file and integrate them into your cache.
+- **Multiple Repositories:** Organize your favorites into multiple repositories, each with its own file, prefix, and priority. Easily register, unregister, and switch between repositories.
 
 ## Installation from the PowerShell Gallery
 
@@ -87,7 +85,45 @@ Export-CmdFav -Path "C:\Path\To\Favorites.json"
 Import-CmdFav -Path "C:\Path\To\Favorites.json"
 ```
 
-### Change the save location for the settings cache
+### Manage Repositories
+
+You can organize your favorites into multiple repositories, each with its own file, prefix, and priority.
+
+> **Repository Feature:**  
+> The repository feature allows you to easily share script blocks with colleagues.  
+> Simply place the associated XML file on a file share and register it as a repository.  
+> For example, if you register a repository with the prefix `Work`, all favorites whose names start with `Work.` (note the dot) will be stored in this repository.  
+> When you register a new repository, existing commands are automatically reassigned:  
+> - All entries with a matching prefix are moved to the new repository.  
+> - All entries without a specific repository prefix remain in the default repository.  
+> This makes it easy to separate and share favorites between personal and team contexts.
+
+#### Register a new repository
+```PowerShell
+Register-CmdFavRepository -Name "Work" -Prefix "Work" -Path "\\fileshare\cmdfav\work.xml"
+```
+
+#### Register the default repository
+```PowerShell
+Register-CmdFavRepository -Default -Path "C:\cmdfav\default.xml"
+```
+
+#### List all repositories
+```PowerShell
+Get-CmdFavRepository
+```
+
+#### Unregister a repository
+```PowerShell
+UnRegister-CmdFavRepository -Name "Work"
+```
+
+#### Keep entries from a repository after unregistering
+```PowerShell
+UnRegister-CmdFavRepository -Name "Work" -KeepEntries
+```
+
+#### Change the save location for the settings cache (deprecated, use repositories instead)
 ```PowerShell
 Set-PSFConfig -FullName CmdFav.HistorySave.Path -Value "C:\Users\MyUser\OneDrive\PowerShell" -PassThru|Register-PSFConfig -Scope UserDefault
 ```
