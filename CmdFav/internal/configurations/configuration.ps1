@@ -14,6 +14,9 @@ Set-PSFConfig -Module 'CmdFav' -Name 'Example.Setting' -Value 10 -Initialize -Va
 Set-PSFConfig -Module 'CmdFav' -Name 'Import.DoDotSource' -Value $false -Initialize -Validation 'bool' -Description "Whether the module files should be dotsourced on import. By default, the files of this module are read as string value and invoked, which is faster but worse on debugging."
 Set-PSFConfig -Module 'CmdFav' -Name 'Import.IndividualFiles' -Value $false -Initialize -Validation 'bool' -Description "Whether the module files should be imported individually. During the module build, all module code is compiled into few files, which are imported instead by default. Loading the compiled versions is faster, using the individual files is easier for debugging and testing out adjustments."
 Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value @() -Initialize -Description "Storage of the saved history" -AllowDelete
-Set-PSFConfig -Module 'CmdFav' -Name 'Selector.ConsoleGridView' -Value $false -Initialize -Validation 'bool' -Description "If set to `$true use Out-ConsoleGridView for manual command selection"
-Set-PSFConfig -Module 'CmdFav' -Name 'HistorySave.Path' -Value "$($env:AppData)\PowerShell\PSFramework\Config" -Initialize -Validation string -Description "Where should the history be saved?"
-Set-PSFConfig -Module 'CmdFav' -Name 'HistorySave.File' -Value "cmdfav.json" -Initialize -Validation string -Description "Where should the history be saved?"
+Set-PSFConfig -Module 'CmdFav' -Name 'HistorySave.Path' -Value "$($env:AppData)\PowerShell\PSFramework\Config" -Initialize -Validation string -Description "DEPRECATED: Where should the history be saved?"
+Set-PSFConfig -Module 'CmdFav' -Name 'HistorySave.File' -Value "cmdfav.json" -Initialize -Validation string -Description "DEPRECATED: Where should the history be saved?"
+Set-PSFConfig -Module 'CmdFav' -Name 'Repository.PERSONALDEFAULT.Path' -Value "$($env:AppData)\PowerShell\PSFramework\Config\cmdfav.xml" -Initialize -Validation string -Description "Where should the history be saved by Default?"
+Set-PSFConfig -Module 'CmdFav' -Name 'Repository.PERSONALDEFAULT.Prefix' -Value "" -Initialize -Description "Where should the history be saved by Default?"
+Set-PSFConfig -Module 'CmdFav' -Name 'Repository.PERSONALDEFAULT.Priority' -Value 999 -Initialize -Validation integerpositive -Description "Which priority should the default repository have? The higher the number, the higher the priority. This is used to determine which repository to use when no prefix is specified."
+

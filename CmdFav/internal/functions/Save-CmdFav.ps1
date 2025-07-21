@@ -12,10 +12,30 @@
 
         Saves the CmdFav history cache to the configured file.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     param (
-
     )
+    Update-CmdFavRepositoryMapping
+    $repos = Get-CmdFavRepository
+    if (-not $repos) {
+        Write-PSFMessage -Level Warning -Message "No CmdFav repositories registered, nothing to save"
+        return
+    }
+    $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
+    foreach($repository in $repos) {
+        $filePath = $repository.Path
+        $repoCommands = $cmdCache | Where-Object { $_.Repository -eq $repository.Name }|Select-PSFObject -Property @{N='Name'; E={
+            $_.Name -replace "^$($repository.Prefix)\.",""
+        }}, CommandLine, Tag
+        # write-PSFMessage -Level Verbose -Message "Saving $($repoCommands.count) favorites with prefix '$($repository.Prefix)' to CmdFav repository '$($repository.Name)' to file '$filePath'"
+        Invoke-PSFProtectedCommand -Action "Saving $($repoCommands.count) favorites with prefix '$($repository.Prefix)' to CmdFav repository '$($repository.Name)' to file '$filePath'" -ScriptBlock {
+            write-PSFMessage -Level Verbose -Message "Saving $($repoCommands.count) favorites with prefix '$($repository.Prefix)' to CmdFav repository '$($repository.Name)' to file '$filePath'"
+            Write-PSFMessage -Level Verbose -Message ">>>Command Names '$($repoCommands.Name -join ', ')'"
+           $repoCommands | Export-PSFClixml -Path $filePath
+        }
+
+    }
+    return
     $configfile = Join-Path (Get-PSFConfigValue -FullName 'CmdFav.HistorySave.Path') (Get-PSFConfigValue -FullName 'CmdFav.HistorySave.File')
     Write-PSFMessage "Saving CmdFav History Cache to $configfile"
     Invoke-PSFProtectedCommand -Action "Saving CmdFav History Cache to $configfile" -ScriptBlock {
