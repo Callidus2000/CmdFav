@@ -43,12 +43,15 @@
         $CommandLine,
         [string[]]$Tag,
         [string]$Description,
+        [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.RepoNames")]
+        [string]$Repository = 'PERSONALDEFAULT',
         [string]$NewName
     )
 
     # Retrieving the cache of favorite commands.
     Restore-CmdFav
-    $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
+    # $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
+    $cmdCache = Get-CmdFavCache
 
     # Handling the case where no favorite commands are stored.
     if (-not $cmdCache) {
@@ -65,7 +68,7 @@
     }
 
     # Creating a hashtable of new properties based on provided parameters.
-    $newProperties = $PSBoundParameters | ConvertTo-PSFHashtable -Include CommandLine, Tag, Description
+    $newProperties = $PSBoundParameters | ConvertTo-PSFHashtable -Include CommandLine, Tag, Description, Repository
 
     # Updating the existing favorite command with new properties.
     foreach ($key in $newProperties.Keys) {
@@ -79,6 +82,7 @@
     }
 
     # Saving the updated cache to the configuration framework.
-    Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete
+    Set-CmdFavCache -CmdCache $cmdCache
+    # Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete
     Save-CmdFav
 }

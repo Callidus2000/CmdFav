@@ -17,6 +17,4 @@ Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value @() -Initialize -Descripti
 Set-PSFConfig -Module 'CmdFav' -Name 'HistorySave.Path' -Value "$($env:AppData)\PowerShell\PSFramework\Config" -Initialize -Validation string -Description "DEPRECATED: Where should the history be saved?"
 Set-PSFConfig -Module 'CmdFav' -Name 'HistorySave.File' -Value "cmdfav.json" -Initialize -Validation string -Description "DEPRECATED: Where should the history be saved?"
 Set-PSFConfig -Module 'CmdFav' -Name 'Repository.PERSONALDEFAULT.Path' -Value "$($env:AppData)\PowerShell\PSFramework\Config\cmdfav.xml" -Initialize -Validation string -Description "Where should the history be saved by Default?"
-Set-PSFConfig -Module 'CmdFav' -Name 'Repository.PERSONALDEFAULT.Prefix' -Value "" -Initialize -Description "Where should the history be saved by Default?"
-Set-PSFConfig -Module 'CmdFav' -Name 'Repository.PERSONALDEFAULT.Priority' -Value 999 -Initialize -Validation integerpositive -Description "Which priority should the default repository have? The higher the number, the higher the priority. This is used to determine which repository to use when no prefix is specified."
 

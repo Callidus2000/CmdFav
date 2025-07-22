@@ -11,7 +11,8 @@
         # Typing will suggest available tags for completion.
     #>
     try {
-        Get-PSFConfigValue -FullName 'CmdFav.History' | Select-Object -ExpandProperty Tag | Select-Object -Unique
+        Get-CmdFavCache | Select-Object -ExpandProperty Tag | Select-Object -Unique
+        # Get-PSFConfigValue -FullName 'CmdFav.History' | Select-Object -ExpandProperty Tag | Select-Object -Unique
         #@{name = "Text"; expression = { $_.name } }, @{name = "ToolTip"; expression = { $_.CommandLine } }
     }
     catch {

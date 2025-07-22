@@ -1,13 +1,17 @@
 ﻿# Changelog
 
+## 2.1.0 (2025-07-22)
+- Major: Repository assignment is now manual, no longer via prefix
+- The attributes Prefix and Priority have been removed
+- Existing functions and configurations have been updated accordingly
+- README and help texts updated
+
 ## 2.0.0 (2024-06-13)
-- Major: Introduced repository feature for favorites
-    - Favorites can now be organized into multiple repositories, each with its own file, prefix, and priority
+    - Favorites can now be organized into multiple repositories, each with its own file
     - Register, unregister, and list repositories with new cmdlets
-    - Favorites are automatically assigned to repositories based on their prefix (e.g., "Work.")
-    - Repository XML files can be shared via fileshares for team collaboration
+    - Repository XML files can still be shared for team collaboration
     - Existing favorites are reassigned when registering new repositories
-    - All favorites without a specific prefix remain in the default repository
+    - All favorites without explicit repository assignment remain in the default repository
 - Added help blocks to all internal and public functions
 - Updated README with repository usage and sharing instructions
 - Minor bugfixes and code cleanup

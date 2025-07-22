@@ -34,19 +34,13 @@
     $oldCommandCache=Get-CmdFavCache
     foreach ($repository in $repos) {
         $filePath = $repository.Path
-        if ($repository.Name -eq 'PERSONALDEFAULT') {
-            $prefix = ''
-        }
-        else {
-            $prefix = "$($repository.Prefix)."
-        }
 
         if(-not (Test-Path -Path $filePath)) {
             Write-PSFMessage -Level Warning -Message "File '$filePath' does not exist, skipping repository '$($repository.Name)'"
             continue
         }
-        Invoke-PSFProtectedCommand -Action "Restoring favorites with prefix '$($repository.Prefix)' from CmdFav repository '$($repository.Name)' file '$filePath'" -ScriptBlock {
-            $cmdCache += [array] (import-PSFClixml -Path $filePath | select-PSFObject -Property @{Name = 'Name'; Expression = { "$Prefix$($_.Name)" } }, CommandLine, Tag, @{Name = 'Repository'; Expression = { $repository.Name } })
+        Invoke-PSFProtectedCommand -Action "Restoring favorites from CmdFav repository '$($repository.Name)' file '$filePath'" -ScriptBlock {
+            $cmdCache += [array] (import-PSFClixml -Path $filePath | select-PSFObject -Property Name, CommandLine, Tag, @{Name = 'Repository'; Expression = { $repository.Name } })
         }
     }
 
@@ -58,5 +52,5 @@
         }
     }
     Set-CmdFavCache -cmdCache $cmdCache
-    Update-CmdFavRepositoryMapping
+    # Update-CmdFavRepositoryMapping
 }

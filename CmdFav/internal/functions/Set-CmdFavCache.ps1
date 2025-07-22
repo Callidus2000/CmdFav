@@ -20,5 +20,14 @@
         [Parameter(Mandatory)]
         $CmdCache
     )
+    $cmdCache = $cmdCache | select-PSFObject -Property Name, CommandLine, Tag, @{Name = 'Repository'; Expression = {
+            if ([string]::IsNullOrEmpty($_.Repository)) {
+                # If the repository is not specified, assign a default value.
+                return 'PERSONALDEFAULT'
+            }
+            $_.Repository
+        }
+    }
+
     Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete # -PassThru | Register-PSFConfig -Scope FileUserShared
 }

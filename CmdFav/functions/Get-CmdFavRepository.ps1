@@ -5,7 +5,7 @@
 
         .DESCRIPTION
         Returns a list of CmdFav repositories registered in the configuration, including their
-        name, path, prefix, and priority. You can filter by repository name.
+        name und path. You can filter by repository name.
 
         .PARAMETER Name
         The name(s) of the repository or repositories to retrieve. If omitted, all repositories
@@ -26,15 +26,15 @@
         [string[]]$Name
     )
     $repoConfig = Get-PSFConfig -Module CmdFav -Name "Repository.*"
-    $repoNames = $repoConfig.Name -replace 'Repository\.([^\.]+)\..*', '$1' | Select-Object -Unique
+    $repoNames = [array]($repoConfig.Name -replace 'Repository\.([^\.]+)\..*', '$1' | Select-Object -Unique)
     if ($Name) {
-        $repoNames = $repoNames | Where-Object { $Name -contains $_ }
+        $repoNames = [array]($repoNames | Where-Object { $Name -contains $_ })
     }
     Write-PSFMessage -Level Verbose -Message "Found CmdFav repositories: $($repoNames -join ', ')"
     foreach ($repoName in $repoNames) {
-        $resultHash = @{name = $repoName }
-        'Path', 'Prefix', 'Priority' | ForEach-Object {
-            $resultHash[$_] = $repoConfig | Where-Object name -eq "Repository.$repoName.$_" | select-object -ExpandProperty value
+        $resultHash = @{
+            name = $repoName
+            Path=Get-PSFConfigValue -FullName "CmdFav.Repository.$repoName.Path"
         }
         [PSCustomObject]$resultHash
     }

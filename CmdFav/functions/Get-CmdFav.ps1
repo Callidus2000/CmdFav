@@ -32,7 +32,8 @@
     )
 
     # Retrieving the favorite commands cache.
-    $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
+    # $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
+    $cmdCache = Get-CmdFavCache
 
     # Handling the case where no favorite commands are stored.
     if (-not $cmdCache) {

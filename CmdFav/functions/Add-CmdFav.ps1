@@ -67,13 +67,16 @@
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Tags")]
         [string[]]$Tag,
         [string]$Description,
+        [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.RepoNames")]
+        [string]$Repository = 'PERSONALDEFAULT',
         [switch]$Force
     )
 
     begin {
         # $($env:LocalAppData)\WindowsPowerShell\PSFramework\Config
         Restore-CmdFav
-        $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
+        # $cmdCache = Get-PSFConfigValue -FullName 'CmdFav.History' -Fallback @()
+        $cmdCache = Get-CmdFavCache
         if (-not $cmdCache) { $cmdCache = @() }
         $prevFav = ($cmdCache | Where-Object name -eq $Name)
         if ($prevFav) {
@@ -85,7 +88,7 @@
                 Stop-PSFFunction  -Level Warning -Message "Favorite Name '$Name' already exists, -Force not used, does not overwrite"
             }
         }
-        $newEntry = $PSBoundParameters | ConvertTo-PSFHashtable -IncludeEmpty -Include Name, CommandLine, Tag, Description
+        $newEntry = $PSBoundParameters | ConvertTo-PSFHashtable -IncludeEmpty -Include Name, CommandLine, Tag, Description, Repository
         $scriptBlockBuilder = [System.Text.StringBuilder]::new()
         $commandArray=@()
         If ($PsCmdlet.ParameterSetName -eq 'LastCommand') {
@@ -114,7 +117,8 @@
         ([array]$cmdCache) += [PSCustomObject]$newEntry
         $cmdCache = [array]$cmdCache
         Write-PSFMessage "Saving cache to configuration framework"
-        Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete # -PassThru | Register-PSFConfig -Scope FileUserShared
+        Set-CmdFavCache -CmdCache $cmdCache
+        # Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete # -PassThru | Register-PSFConfig -Scope FileUserShared
         Save-CmdFav
     }
 }

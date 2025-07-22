@@ -31,7 +31,14 @@
     if (-not $cmdCache) {
         $cmdCache = @()
     }
-
+    $cmdCache = $cmdCache | select-PSFObject -Property Name, CommandLine, Tag, @{Name = 'Repository'; Expression = {
+            if ([string]::IsNullOrEmpty($_.Repository)) {
+                # If the repository is not specified, assign a default value.
+                return 'PERSONALDEFAULT'
+            }
+            $_.Repository
+        }
+    }
     # Returning the array list containing information about favorite commands.
     return $cmdCache
 }

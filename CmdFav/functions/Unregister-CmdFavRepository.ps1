@@ -34,7 +34,7 @@
         Write-PSFMessage -Level Warning -Message "No CmdFav repository with name '$Name' registered, nothing to remove"
         return
     }
-    Write-PSFMessage -Level Host -Message "UnRegistering CmdFav repository '$Name' with Path '$($repo.Path)' and prefix '$($repo.Prefix)'"
+    Write-PSFMessage -Level Host -Message "UnRegistering CmdFav repository '$Name' with Path '$($repo.Path)'"
     $repoConfig = Get-PSFConfig -Module CmdFav -Name "Repository.$Name.*"
     $repoConfig | Unregister-PSFConfig -Scope UserDefault
     $repoConfig | Set-PSFConfig -AllowDelete
