@@ -33,7 +33,7 @@ CmdFav is a PowerShell module designed to help you manage and organize your favo
 - **Edit-CmdFav:** Modify properties of existing favorite commands, such as command line, tags, descriptions, and even rename them.
 - **Export-CmdFav:** Export your favorite commands to a JSON file for backup or sharing.
 - **Import-CmdFav:** Import favorite commands from a JSON file and integrate them into your cache.
-- **Multiple Repositories:** Organize your favorites into multiple repositories, each with its own file, prefix, and priority. Easily register, unregister, and switch between repositories.
+- **Multiple Repositories:** Organize your favorites into multiple repositories, each with its own file. Easily register, unregister, and switch between repositories.
 
 ## Installation from the PowerShell Gallery
 
