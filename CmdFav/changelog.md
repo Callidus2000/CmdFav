@@ -1,5 +1,20 @@
 ﻿# Changelog
 
+## 2.2.5 (2025-07-22)
+- Added: Force switch to Register-CmdFavRepository for direct file registration
+- Improved: Register-CmdFavRepository now prevents simultaneous use of Move and Force
+- Improved: Help texts and parameter validation for repository management
+- Fixed: Various minor bugs and edge cases in repository registration and file handling
+- Performance and stability improvements
+
+## 2.2.4 (2025-07-21)
+- Improved: Internal error handling and logging for repository operations
+- Fixed: Minor UI/UX issues in command output
+
+## 2.2.3 (2025-07-21)
+- Improved: Documentation and help texts for new repository features
+- Fixed: Minor bugs in CmdFav copy/move logic
+
 ## 2.2.2 (2025-07-22)
 - Various bugfixes and stability improvements
 - Improved parameter validation and error handling

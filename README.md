@@ -97,10 +97,23 @@ You can organize your favorites into multiple repositories, each with its own fi
 > All favorites without explicit repository assignment remain in the default repository.  
 > This makes it easy to separate and share favorites between personal and team contexts.
 
+
 #### Register a new repository
 ```PowerShell
 Register-CmdFavRepository -Name "Work" -Path "\\fileshare\cmdfav\work.xml"
 ```
+
+#### Move an existing repository file to a new location
+```PowerShell
+Register-CmdFavRepository -Name "Work" -Path "C:\newlocation\work.xml" -Move
+```
+This moves the current repository file to the new location and updates the registration.
+
+#### Use an existing file at the target location for registration
+```PowerShell
+Register-CmdFavRepository -Name "Work" -Path "C:\existing\work.xml" -Force
+```
+This registers the repository to use the file at the target location, ignoring the previous file.
 
 #### Register the default repository
 ```PowerShell

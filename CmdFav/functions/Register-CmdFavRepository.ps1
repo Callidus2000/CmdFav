@@ -27,6 +27,14 @@
         .EXAMPLE
         Register-CmdFavRepository -Default -Path "C:\cmdfav\default.xml"
         Registers the default repository at the specified path.
+
+        .EXAMPLE
+        Register-CmdFavRepository -Name "Work" -Path "C:\newlocation\work.xml" -Move
+        Moves the current repository file to the new location and updates the registration.
+
+        .EXAMPLE
+        Register-CmdFavRepository -Name "Work" -Path "C:\existing\work.xml" -Force
+        Registers the repository to use the file at the target location, ignoring the previous file.
     #>
     [CmdletBinding()]
     param (
@@ -43,8 +51,14 @@
         $Path,
         [Parameter(ParameterSetName = 'addOnRepo')]
         [Parameter(ParameterSetName = 'defaultRepository')]
+        [Parameter(ParameterSetName = 'resetDefaultRepository')]
         [switch]$Move,
+        [Parameter(ParameterSetName = 'addOnRepo')]
+        [Parameter(ParameterSetName = 'defaultRepository')]
+        [Parameter(ParameterSetName = 'resetDefaultRepository')]
+        [switch]$Force,
         # [Parameter(ParameterSetName = 'defaultRepository')]
+        [Parameter(ParameterSetName = 'defaultRepository')]
         [Parameter(Mandatory, ParameterSetName = 'resetDefaultRepository')]
         [switch]$Reset
     )
@@ -58,21 +72,32 @@
     }
 
     $repoConfig = Get-CmdFavRepository -Name $Name
-    if ($repoConfig -and -not $Move) {
-        Write-Error "Repository '$Name' already exists. Use -Move to relocate the repository file."
+    if ($Move -and $Force) {
+        Stop-PSFFunction -Level Warning -Message "-Move and -Force cannot be used together. Please choose only one option."
         return
     }
-    if ($repoConfig -and $Move) {
-        $oldPath = $repoConfig.Path
-        if ((Test-Path -Path $oldPath) -and (Test-Path -Path $Path)) {
-            Stop-PSFFunction -Level Warning -Message "Repository file '$oldPath' already exists at the new location '$Path'. Stop instead Overwriting."
+    if ($repoConfig) {
+        if (-not $Move -and -not $Force) {
+            Stop-PSFFunction -Level Warning -Message "Repository '$Name' already exists. Use -Move to relocate the repository file or -Force to use the file at the target location."
             return
-        }elseif (Test-Path -Path $oldPath) {
-            Write-PSFMessage -Level Host -Message "Moving repository file from '$oldPath' to '$Path'"
-            Move-Item -Path $oldPath -Destination $Path -Force
-        } else {
-            Write-PSFMessage -Level Host "Old repository file '$oldPath' does not exist. Only config will be updated."
         }
+        if ($Move) {
+            $oldPath = $repoConfig.Path
+            if ((Test-Path -Path $oldPath) -and (Test-Path -Path $Path)) {
+                Stop-PSFFunction -Level Warning -Message "Repository file '$oldPath' already exists at the new location '$Path'. Stop instead Overwriting."
+                return
+            }
+            elseif (Test-Path -Path $oldPath) {
+                Write-PSFMessage -Level Host -Message "Moving repository file from '$oldPath' to '$Path'"
+                Move-Item -Path $oldPath -Destination $Path -Force
+            }
+            else {
+                Write-PSFMessage -Level Host "Old repository file '$oldPath' does not exist. Only config will be updated."
+            }
+        }
+        # Force is set
+        Write-PSFMessage -Level Host -Message "Forcing repository registration to use file at '$Path'. Old file will be ignored."
+        # No file move, just update config
     }
 
     Write-PSFMessage -Level Verbose -Message "Registering CmdFav repository '$Name' at '$Path'"
