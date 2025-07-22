@@ -24,7 +24,7 @@
         [parameter(mandatory = $true, Position = 1)]
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Names")]
         [PsfValidateSet(ScriptBlock = { (Get-CmdFavCache).Name }, ErrorMessage = "CmdFav with the name {0} does not exist.")]
-        [string]$Name
+        [string[]]$Name
     )
 
     # Retrieving the favorite commands cache.
@@ -39,7 +39,7 @@
     }
 
     # Removes the command line for the specified favorite name.
-    $cmdCache = $cmdCache | Where-Object name -ne $Name
+    $cmdCache = $cmdCache | Where-Object name -notin $Name
     Set-CmdFavCache -CmdCache $cmdCache
     # Set-PSFConfig -Module 'CmdFav' -Name 'History' -Value ($cmdCache) -AllowDelete # -PassThru | Register-PSFConfig -Scope FileUserShared
     Save-CmdFav

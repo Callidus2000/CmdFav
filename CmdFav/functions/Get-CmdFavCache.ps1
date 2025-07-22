@@ -38,7 +38,7 @@
             }
             $_.Repository
         }
-    }
+    }|Sort-Object -Property Name
     # Returning the array list containing information about favorite commands.
     return $cmdCache
 }

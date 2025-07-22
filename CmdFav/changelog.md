@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## 2.2.2 (2025-07-22)
+- Various bugfixes and stability improvements
+- Improved parameter validation and error handling
+- Enhanced documentation and help texts
+- Minor UI/UX improvements in command output
+- Performance optimizations for repository operations
+
 ## 2.1.1 (2025-07-22)
 -- Added: Manual assignment of favorites to repositories via parameter
 -- Added: Copy-CmdFav function to duplicate favorites under a new name in any repository

@@ -34,18 +34,50 @@
         [string]$Name,
 
         [Parameter(Mandatory, ParameterSetName = 'defaultRepository')]
+        [Parameter(Mandatory, ParameterSetName = 'resetDefaultRepository')]
         [switch]$Default,
 
         [Parameter(Mandatory, ParameterSetName = 'addOnRepo')]
         [Parameter(Mandatory, ParameterSetName = 'defaultRepository')]
-        [PsfNewFile]$Path
+        # [PsfNewFile]
+        $Path,
+        [Parameter(ParameterSetName = 'addOnRepo')]
+        [Parameter(ParameterSetName = 'defaultRepository')]
+        [switch]$Move,
+        # [Parameter(ParameterSetName = 'defaultRepository')]
+        [Parameter(Mandatory, ParameterSetName = 'resetDefaultRepository')]
+        [switch]$Reset
     )
-    if($Default) {
+    if ($Default) {
         $Name = 'PERSONALDEFAULT'
+        if ($Reset) {
+            $defaultPath = Join-Path $env:AppData 'PowerShell\PSFramework\Config\cmdfav.xml'
+            $Path = $defaultPath
+            Write-PSFMessage -Level Host -Message "Resetting default repository to '$defaultPath'"
+        }
     }
+
+    $repoConfig = Get-CmdFavRepository -Name $Name
+    if ($repoConfig -and -not $Move) {
+        Write-Error "Repository '$Name' already exists. Use -Move to relocate the repository file."
+        return
+    }
+    if ($repoConfig -and $Move) {
+        $oldPath = $repoConfig.Path
+        if ((Test-Path -Path $oldPath) -and (Test-Path -Path $Path)) {
+            Stop-PSFFunction -Level Warning -Message "Repository file '$oldPath' already exists at the new location '$Path'. Stop instead Overwriting."
+            return
+        }elseif (Test-Path -Path $oldPath) {
+            Write-PSFMessage -Level Host -Message "Moving repository file from '$oldPath' to '$Path'"
+            Move-Item -Path $oldPath -Destination $Path -Force
+        } else {
+            Write-PSFMessage -Level Host "Old repository file '$oldPath' does not exist. Only config will be updated."
+        }
+    }
+
     Write-PSFMessage -Level Verbose -Message "Registering CmdFav repository '$Name' at '$Path'"
-    Set-PSFConfig -Module CmdFav -Name "Repository.$Name.Path" -Value $Path -Validation 'string' -Description "CmdFav repository '$Name' at '$Path'" -AllowDelete -PassThru|Register-PSFConfig -Scope UserDefault
-    if(test-path -Path $Path) {
+    Set-PSFConfig -Module CmdFav -Name "Repository.$Name.Path" -Value $Path -Validation 'string' -Description "CmdFav repository '$Name' at '$Path'" -AllowDelete -PassThru | Register-PSFConfig -Scope UserDefault
+    if (Test-Path -Path $Path) {
         Restore-CmdFav -mode 'Append'
     }
     Save-cmdFav

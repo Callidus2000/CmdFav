@@ -47,6 +47,7 @@
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.RepoNames")]
         [PsfValidateSet(ScriptBlock = { (Get-CmdFavRepository).Name })]
         [string]$Repository,
+        [PSFValidateScript({ $_ -notin ((Get-CmdFavCache).Name) }, ErrorMessage = "The CmdFav with the name {0} already exists in the cache.")]
         [string]$NewName
     )
 
