@@ -40,7 +40,7 @@
             continue
         }
         Invoke-PSFProtectedCommand -Action "Restoring favorites from CmdFav repository '$($repository.Name)' file '$filePath'" -ScriptBlock {
-            $cmdCache += [array] (import-PSFClixml -Path $filePath | select-PSFObject -Property Name, CommandLine, Tag, @{Name = 'Repository'; Expression = { $repository.Name } })
+            $cmdCache += [array] (import-PSFClixml -Path $filePath | select-PSFObject -Property Name, CommandLine,Description, Tag, @{Name = 'Repository'; Expression = { $repository.Name } })
         }
     }
 

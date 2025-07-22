@@ -47,10 +47,10 @@
             $cmdCache = $cmdCache | Where-Object { $_.Tag -contains $Tag }
         }
         if (Get-PSFConfigValue -FullName 'CmdFav.Selector.ConsoleGridView' -Fallback $true) {
-            $chosenCommand = $cmdCache | Select-Object -Property Name, Tag, CommandLine | Out-ConsoleGridView -OutputMode Single -Title "Choose a favorite command"
+            $chosenCommand = $cmdCache | Select-Object -Property Name, Tag, CommandLine, Description | Out-ConsoleGridView -OutputMode Single -Title "Choose a favorite command"
         }
         else {
-            $chosenCommand = $cmdCache | Select-Object -Property Name, Tag, CommandLine | Out-GridView -OutputMode Single -Title "Choose a favorite command"
+            $chosenCommand = $cmdCache | Select-Object -Property Name, Tag, CommandLine, Description | Out-GridView -OutputMode Single -Title "Choose a favorite command"
         }
         if (-not $chosenCommand) {
             Write-PSFMessage "Nothing chosen"

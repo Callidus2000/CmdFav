@@ -25,18 +25,13 @@
     $cmdCache = Get-CmdFavCache
     foreach ($repository in $repos) {
         $filePath = $repository.Path
-        $repoCommands = $cmdCache | Where-Object { $_.Repository -eq $repository.Name } | Select-PSFObject -Property Name, CommandLine, Tag
+        $repoCommands = $cmdCache | Where-Object { $_.Repository -eq $repository.Name } | Select-PSFObject -Property Name, CommandLine,Description, Tag
         Invoke-PSFProtectedCommand -Action "Saving $($repoCommands.count) favorites to CmdFav repository '$($repository.Name)' to file '$filePath'" -ScriptBlock {
             write-PSFMessage -Level Verbose -Message "Saving $($repoCommands.count) favorites to CmdFav repository '$($repository.Name)' to file '$filePath'"
             Write-PSFMessage -Level Verbose -Message ">>>Command Names '$($repoCommands.Name -join ', ')'"
+            Write-PSFMessage -Level Debug -Message ">>>$repoCommands '$($repoCommands|ConvertTo-Json -Depth 3)'"
             $repoCommands | Export-PSFClixml -Path $filePath
         }
 
-    }
-    return
-    $configfile = Join-Path (Get-PSFConfigValue -FullName 'CmdFav.HistorySave.Path') (Get-PSFConfigValue -FullName 'CmdFav.HistorySave.File')
-    Write-PSFMessage "Saving CmdFav History Cache to $configfile"
-    Invoke-PSFProtectedCommand -Action "Saving CmdFav History Cache to $configfile" -ScriptBlock {
-        Get-PSFConfig -Module 'CmdFav' -Name 'History' | Export-PSFConfig -OutPath $configfile
     }
 }

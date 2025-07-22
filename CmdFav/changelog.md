@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+## 2.2.6 (2025-07-22)
+- Fixed: Bug where the Description field was dropped during save/restore operations
+
 ## 2.2.5 (2025-07-22)
 - Added: Force switch to Register-CmdFavRepository for direct file registration
 - Improved: Register-CmdFavRepository now prevents simultaneous use of Move and Force

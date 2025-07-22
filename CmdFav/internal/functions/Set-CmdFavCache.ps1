@@ -20,7 +20,7 @@
         [Parameter(Mandatory)]
         $CmdCache
     )
-    $cmdCache = $cmdCache | select-PSFObject -Property Name, CommandLine, Tag, @{Name = 'Repository'; Expression = {
+    $cmdCache = $cmdCache | select-PSFObject -Property Name, CommandLine, Description, Tag, @{Name = 'Repository'; Expression = {
             if ([string]::IsNullOrEmpty($_.Repository)) {
                 # If the repository is not specified, assign a default value.
                 return 'PERSONALDEFAULT'
