@@ -25,6 +25,7 @@
         [parameter(mandatory = $true, Position = 1, ParameterSetName = 'targeted')]
         # [parameter(mandatory = $false, Position = 1,ParameterSetName='chooser')]
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Names")]
+        [PsfValidateSet(ScriptBlock = { (Get-CmdFavCache).Name }, ErrorMessage = "CmdFav with the name {0} does not exist.")]
         [string]$Name,
         [parameter(mandatory = $false, ParameterSetName = 'chooser')]
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Tags")]

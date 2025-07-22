@@ -39,12 +39,14 @@
     param (
         [parameter(mandatory = $true, Position = 1)]
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.Names")]
+        [PsfValidateSet(ScriptBlock = { (Get-CmdFavCache).Name }, ErrorMessage = "CmdFav with the name {0} does not exist.")]
         [string]$Name,
         $CommandLine,
         [string[]]$Tag,
         [string]$Description,
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.RepoNames")]
-        [string]$Repository = 'PERSONALDEFAULT',
+        [PsfValidateSet(ScriptBlock = { (Get-CmdFavRepository).Name })]
+        [string]$Repository,
         [string]$NewName
     )
 

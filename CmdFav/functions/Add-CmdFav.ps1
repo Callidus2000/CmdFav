@@ -68,6 +68,7 @@
         [string[]]$Tag,
         [string]$Description,
         [PSFramework.TabExpansion.PsfArgumentCompleterAttribute("CmdFav.RepoNames")]
+        [PsfValidateSet(ScriptBlock = { (Get-CmdFavRepository).Name })]
         [string]$Repository = 'PERSONALDEFAULT',
         [switch]$Force
     )

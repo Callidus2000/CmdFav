@@ -87,20 +87,19 @@ Import-CmdFav -Path "C:\Path\To\Favorites.json"
 
 ### Manage Repositories
 
-You can organize your favorites into multiple repositories, each with its own file, prefix, and priority.
+
+You can organize your favorites into multiple repositories, each with its own file. Assignment to repositories is now manual using the `-Repository` parameter.
 
 > **Repository Feature:**  
 > The repository feature allows you to easily share script blocks with colleagues.  
 > Simply place the associated XML file on a file share and register it as a repository.  
-> For example, if you register a repository with the prefix `Work`, all favorites whose names start with `Work.` (note the dot) will be stored in this repository.  
-> When you register a new repository, existing commands are automatically reassigned:  
-> - All entries with a matching prefix are moved to the new repository.  
-> - All entries without a specific repository prefix remain in the default repository.  
+> When you register a new repository, you can manually assign favorites to it using the `-Repository` parameter.  
+> All favorites without explicit repository assignment remain in the default repository.  
 > This makes it easy to separate and share favorites between personal and team contexts.
 
 #### Register a new repository
 ```PowerShell
-Register-CmdFavRepository -Name "Work" -Prefix "Work" -Path "\\fileshare\cmdfav\work.xml"
+Register-CmdFavRepository -Name "Work" -Path "\\fileshare\cmdfav\work.xml"
 ```
 
 #### Register the default repository
@@ -123,9 +122,25 @@ UnRegister-CmdFavRepository -Name "Work"
 UnRegister-CmdFavRepository -Name "Work" -KeepEntries
 ```
 
-#### Change the save location for the settings cache (deprecated, use repositories instead)
+#### Assign a favorite to a repository
 ```PowerShell
-Set-PSFConfig -FullName CmdFav.HistorySave.Path -Value "C:\Users\MyUser\OneDrive\PowerShell" -PassThru|Register-PSFConfig -Scope UserDefault
+Add-CmdFav -Name "MyFav" -CommandLine "Get-Process" -Repository "PERSONALDEFAULT"
+```
+
+#### Move a favorite to another repository
+```PowerShell
+Move-CmdFav -Name "MyFav" -Repository "TeamRepo"
+```
+
+#### Copy a favorite to another repository under a new name
+```PowerShell
+Copy-CmdFav -Name "MyFav" -NewName "MyFavCopy" -Repository "TeamRepo"
+```
+
+
+#### Change the save location for the default repository
+```PowerShell
+Register-CmdFavRepository -Default -Path "C:\Users\MyUser\OneDrive\PowerShell\default.xml"
 ```
 
 **Attention!** If you have already got commands saved you have to modify something in the cache to get the existing data automatically transferred! Or copy the `cmdfav.json` file from `$($env:AppData)\PowerShell\PSFramework\Config` manually to the new location.

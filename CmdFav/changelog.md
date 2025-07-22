@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## 2.1.1 (2025-07-22)
+-- Added: Manual assignment of favorites to repositories via parameter
+-- Added: Copy-CmdFav function to duplicate favorites under a new name in any repository
+-- Added: Move-CmdFav function to move favorites between repositories
+-- Added: Parameter validation for repository and name parameters in public functions
+-- Improved: Documentation and help texts for repository assignment, copy, and move
+
 ## 2.1.0 (2025-07-22)
 - Major: Repository assignment is now manual, no longer via prefix
 - The attributes Prefix and Priority have been removed

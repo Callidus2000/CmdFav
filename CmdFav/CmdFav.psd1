@@ -3,7 +3,7 @@
 	RootModule = 'CmdFav.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '2.1.0'
+	ModuleVersion = '2.2.1'
 
 	# ID used to uniquely identify this module
 	GUID = '7608a40d-981d-440d-b140-1ce3c4033cf5'
@@ -41,12 +41,14 @@
 	# Functions to export from this module
 	FunctionsToExport = @(
 		'Add-CmdFav'
+		'Copy-CmdFav'
 		'Edit-CmdFav'
 		'Export-CmdFav'
 		'Get-CmdFav'
 		'Get-CmdFavCache'
 		'Get-CmdFavRepository'
 		'Import-CmdFav'
+		'Move-CmdFav'
 		'Register-CmdFavRepository'
 		'Remove-CmdFav'
 		'UnRegister-CmdFavRepository'

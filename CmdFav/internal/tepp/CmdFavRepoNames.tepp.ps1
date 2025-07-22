@@ -13,7 +13,7 @@
         # Typing will suggest available repository names for completion.
     #>
     try {
-        Get-CmdFavRepository | where-object Name -ne 'PERSONALDEFAULT'| Sort-Object -Property name | Select-Object @{name = "Text"; expression = { $_.name } }, @{name = "ToolTip"; expression = {
+        Get-CmdFavRepository | Sort-Object -Property name | Select-Object @{name = "Text"; expression = { $_.name } }, @{name = "ToolTip"; expression = {
                 if ([string]::IsNullOrWhiteSpace($_.path)) { return $_.Name }
                 $_.path
             }
